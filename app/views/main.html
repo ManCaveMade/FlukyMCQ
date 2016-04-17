@@ -1,23 +1,171 @@
-<div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
-</div>
+<div class="">
+  <div class="page-header">
+    <h1 class="fluky-text strong"><i class="fa fa-braille"></i> Fluky MCQ Marking System</h1>
+    <h5 class="text-right">Created by Mitchell Cox</h5>
+  </div>
 
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">Instructions</h3>
+    </div>
+    <div class="panel-body">
+      <p>
+        Everything you need to do is on this one page. Remember, nothing is stored by Fluky on the server. All the processing is done by your browser using Javascript code - this avoids any possible security risks.
+      </p>
+      <p>
+        First you should create a mark model, which defines your test. You specify the number of questions and then a grid of numerical input boxes is created with the specified default value (usually 0). 
+      </p>
+      <p>
+        You know what the marks for your test should be, so simply insert them... Fluky accepts both positive and negative values! By default, questions do not allow multiple answers but next to each question is a checkbox which you can tick if you do wish to allow multiple answers. If multiple answers are allowed, the mark for each option is added.
+      </p>
+      <p>
+        There are import and export functions available, so you should be able to save your mark model for future use. <i class="fa fa-smile-o"></i>
+      </p>
+    </div>
+  </div>
 
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
 
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Setup Mark Model</h3>
+    </div>
+    <div class="panel-body">
+      <p>
+        Create your mark model here by specifying the number of questions in your test, and the marks awarded to each option.
+      </p>
+
+      <p>
+        <em>
+          Note: Zero marks will be awarded if the number of choices made is greater than the number of choices allowed!
+        </em>
+      </p>
+
+      <p>When you are happy with the options, click the generate button.</p>
+
+      <!--<div class="form-group">
+        <label>Number of Options per Question:</label>
+        <input type="number" class="form-control" data-ng-model="optionsPerQuestion" data-ng-change="changeOptionsPerQuestion()">
+      </div>
+
+      <div class="form-group form-inline">
+        <input data-ng-repeat="q in questionOptions" type="number" class="form-control" data-ng-model="q">
+      </div> -->
+
+
+      <div class="form-group">
+        <label>Default Mark:</label>
+        <input type="number" class="form-control" data-ng-model="defaultMark">
+      </div>
+
+      <div class="form-group">
+        <label>Number of Questions:</label>
+        <input type="number" class="form-control" min="1" data-ng-model="numQuestions">
+      </div>
+
+      <div class="form-group">
+        <button type="button" class="btn btn-primary pull-left" data-ng-click="generateModel()" data-ng-show="!questions">
+          Generate Model Grid
+        </button>
+        <button type="button" class="btn btn-primary pull-left" data-ng-click="generateModel()" data-ng-show="questions">
+          Re-Generate Model Grid
+        </button>
+      </div>
+
+      <div class="form-group">
+        <button type="file" class="btn btn-default pull-right" data-ngf-select="importModel($file, $invalidFiles)" data-ng-bind="importModelText">
+        </button>
+      </div>
+
+
+      <div data-ng-if="questions">
+        <div class="row"></div>
+        <div class="vsep"></div>
+        <hr/>
+        <label>Questions:</label>
+
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>A</th>
+              <th>B</th>
+              <th>C</th>
+              <th>D</th>
+              <th>E</th>
+              <th>Choices</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="q in questions">
+              <td class="center">{{q.num}}</td>
+              <td><input type="number" class="form-control" data-ng-model="q.a"></td>
+              <td><input type="number" class="form-control" data-ng-model="q.b"></td>
+              <td><input type="number" class="form-control" data-ng-model="q.c"></td>
+              <td><input type="number" class="form-control" data-ng-model="q.d"></td>
+              <td><input type="number" class="form-control" data-ng-model="q.e"></td>
+              <td><input type="number" class="form-control" min="1" max="5" data-ng-model="q.choices"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="form-group">
+          <button type="button" class="btn btn-default pull-right" data-ng-click="exportModel()">
+            Export Model Grid
+          </button>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Upload Card Scan</h3>
+    </div>
+    <div class="panel-body">
+      <p>
+        Upload the .dat file that you received from the card scanner here. This file contains a list of student numbers associated to the MCQ card selections.
+      </p>
+      <p>
+        The file will be immediately processed according to the Mark Model above. Click "Download CSV" and you will be prompted where you would like to save the .csv file which contains the marks. Save the file and then proceed to use Fluky to view the associated statistics.
+      </p>
+      <p>
+        <em>
+          Note: On occasion, incompetent students don't fill out their student number correctly. Unfortunately, you will have to manually figure out these cases.
+        </em>
+      </p>
+
+        <label>Upload Scan Data:</label>
+      <div class="input-group">
+        <input type="text" readonly class="form-control" data-ng-model="importMarksFileName" placeholder="Click the &#xf07c; button to choose the .dat file...">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="file" data-ngf-select="importMarks($file, $invalidFiles)"><i class="fa fa-folder-open"></i></button>
+        </span>
+      </input>
+      </div>
+      
+      <div data-ng-if="marks">
+        <div class="vsep"></div>
+
+        <!-- Statistics -->
+        <label>Number of cards marked: </label> {{marks.length}}
+
+
+        <div class="form-group">
+          <button type="button" class="btn btn-primary btn-block" data-ng-click="generateModel()" data-ng-show="!questions">
+            Download CSV
+          </button>
+        </div>
+
+        
+
+      </div>
+
+    </div>
+  </div>
+
 </div>

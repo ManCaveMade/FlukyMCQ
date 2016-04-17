@@ -14,13 +14,16 @@ angular
     'ngCookies',
     'ngResource',
     'ngRoute',
-    'ngSanitize'
+    'ngSanitize',
+    'ngFileSaver',
+    'ngFileUpload',
+    'ui.bootstrap'
   ])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: 'MainCtrl',
+        controller: 'FlukyCtrl',
         controllerAs: 'main'
       })
       .when('/about', {
