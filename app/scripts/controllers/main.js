@@ -11,13 +11,16 @@
  .controller('FlukyCtrl', ['$scope', 'FileSaver', 'Blob', 'Upload', function ($scope, FileSaver, Blob, Upload) {
 
     //$scope.optionsPerQuestion = 5;
-    $scope.numQuestions = 10;
-    $scope.defaultMark = 0;
-    $scope.choicesPerQuestion = 5;
+    $scope.markModelSetup = {
+      numQuestions: 10,
+      defaultMark: 0,
+      choicesPerQuestion: 1,
+      totalMarks: 0,
+      optionsPerQuestion: 5 //A - E
+    };
     
     $scope.markModel = null;
     $scope.importModelText = "Import Model Grid";
-    $scope.totalMarks = 0;
 
     $scope.markData = null;
     $scope.uploading = false;
@@ -51,32 +54,34 @@
   		var q;
   		var i;
 
+      $scope.$apply;
+
   		if (!$scope.markModel) {
   			$scope.markModel = [];
 
-  			for (i = 1; i <= $scope.numQuestions; ++i) {
+  			for (i = 1; i <= $scope.markModelSetup.numQuestions; ++i) {
   				//q = {num: i, 
-  				//	a : $scope.defaultMark, b:$scope.defaultMark, c:$scope.defaultMark, d:$scope.defaultMark, e:$scope.defaultMark,
+  				//	a : $scope.markModelSetup.defaultMark, b:$scope.markModelSetup.defaultMark, c:$scope.markModelSetup.defaultMark, d:$scope.markModelSetup.defaultMark, e:$scope.markModelSetup.defaultMark,
   				//	choices : 1 };
 
           //5 questions are hardcoded for now
           q = {num: i, 
-            choiceMarks: [$scope.defaultMark, $scope.defaultMark, $scope.defaultMark, $scope.defaultMark, $scope.defaultMark],
+            choiceMarks: [$scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark],
             choices: 1 };
 
             $scope.markModel.push(q);
           }
         } else {
-          if ($scope.numQuestions > $scope.markModel.length) {
-           for (i = $scope.markModel.length + 1; i <= $scope.numQuestions; ++i) {
+          if ($scope.markModelSetup.numQuestions > $scope.markModel.length) {
+           for (i = $scope.markModel.length + 1; i <= $scope.markModelSetup.numQuestions; ++i) {
             q = {num: i, 
-              choiceMarks: [$scope.defaultMark, $scope.defaultMark, $scope.defaultMark, $scope.defaultMark, $scope.defaultMark],
+              choiceMarks: [$scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark],
               choices: 1 };
 
               $scope.markModel.push(q);
             }
-          } else if ($scope.numQuestions < $scope.markModel.length) {
-            for (i = $scope.markModel.length; i > $scope.numQuestions; --i) {
+          } else if ($scope.markModelSetup.numQuestions < $scope.markModel.length) {
+            for (i = $scope.markModel.length; i > $scope.markModelSetup.numQuestions; --i) {
              $scope.markModel.pop();
            }
          }
@@ -91,7 +96,7 @@
   			return;
   		}
 
-  		var jsonString = JSON.stringify({"model": $scope.markModel, "totalMarks": $scope.totalMarks});
+  		var jsonString = JSON.stringify({"model": $scope.markModel, "totalMarks": $scope.markModelSetup.totalMarks});
 
   		var data = new Blob([jsonString], { type: 'text/plain;charset=utf-8' });
   		FileSaver.saveAs(data, 'FlukyModel.json');
@@ -114,8 +119,8 @@
          var tempQuestions = JSON.parse(text);
          if (tempQuestions) {
           $scope.markModel = tempQuestions.model;
-          $scope.totalMarks = tempQuestions.totalMarks;
-          $scope.numQuestions = tempQuestions.model.length;
+          $scope.markModelSetup.totalMarks = tempQuestions.totalMarks;
+          $scope.markModelSetup.numQuestions = tempQuestions.model.length;
         } else {
           alert("Something went wrong, please try again.");
         }
@@ -151,7 +156,7 @@ var _processMarkData = function (rawText) {
       var choices = "";
       var choice = "";
       var studNum = "";
-      var cpq = $scope.choicesPerQuestion;
+      var cpq = $scope.markModelSetup.optionsPerQuestion;
       var q = 0;
       var c = 0;
 
@@ -243,7 +248,7 @@ var _processMarkData = function (rawText) {
         //update stats
         averageTotal += tempMark.totalMark;
 
-        if (tempMark.totalMark >= ($scope.totalMarks / 2)) {
+        if (tempMark.totalMark >= ($scope.markModelSetup.totalMarks / 2)) {
           numPassed++;
         }
 

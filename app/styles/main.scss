@@ -1,19 +1,17 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto);
 @import url(https://fonts.googleapis.com/css?family=Poiret+One);
 
-$icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
-// bower:scss
-$font-family-sans-serif:  "Roboto", sans-serif !default;
-
 $border-radius-base:        1px !default;
 $border-radius-large:       2px !default;
 $border-radius-small:       1px !default;
 
+$icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
+// bower:scss
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
-
-//@import "font-awesome/scss/font-awesome.scss";
+@import "font-awesome/scss/font-awesome.scss";
 // endbower
 
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css);
 
 
 
@@ -21,6 +19,7 @@ body {
 padding: 0;
 padding-top: 20px;
 padding-bottom: 100px;
+font-family: "Roboto";
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
