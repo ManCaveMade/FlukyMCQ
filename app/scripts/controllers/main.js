@@ -12,15 +12,16 @@
 
     //$scope.optionsPerQuestion = 5;
     $scope.markModelSetup = {
-      numQuestions: 10,
+      numQuestions: 1,
       defaultMark: 0,
       choicesPerQuestion: 1,
       totalMarks: 0,
-      optionsPerQuestion: 5 //A - E
+      optionsPerQuestion: 5, //A - E
+      knowledgeAreas: []
     };
     
     $scope.markModel = null;
-    $scope.importModelText = "Import Model Grid";
+    $scope.importModelText = "Import Mark Model File";
 
     $scope.markData = null;
     $scope.uploading = false;
@@ -68,7 +69,8 @@
           q = {num: i, 
             choiceMarks: [$scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark],
             choiceTotal: 0,
-            choices: 1 };
+            choices: 1,
+            knowledgeArea: 0 };
 
             $scope.markModel.push(q);
           }
@@ -78,7 +80,8 @@
             q = {num: i, 
               choiceMarks: [$scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark],
               choiceTotal: 0,
-              choices: 1 };
+              choices: 1,
+              knowledgeArea: 0  };
 
               $scope.markModel.push(q);
             }
@@ -88,6 +91,14 @@
            }
          }
        }
+     };
+
+     $scope.updateKA = function() {
+      var num = $scope.markModelSetup.knowledgeAreas.length;
+      $scope.markModelSetup.knowledgeAreas = [];
+      for (var i = 1; i <= num; ++i) {
+        $scope.markModelSetup.knowledgeAreas.push(i);
+      }
      };
 
 
@@ -390,5 +401,8 @@ var _processMarkData = function (rawText) {
       var data = new Blob([csvString], { type: 'text/plain;charset=utf-8' });
       FileSaver.saveAs(data, 'FlukyMarks-' + $scope.importMarksFileName + '.csv');
     };
+
+
+    $scope.generateModel();
 
   }]);

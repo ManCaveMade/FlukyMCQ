@@ -7,31 +7,32 @@
   <uib-accordion>
   <uib-accordion-group heading="Fluky Instructions" is-open="true" panel-class="panel-primary">
   <p>
-    Everything you need to do is on this one page. Remember, nothing is stored by Fluky on the server. All the processing is done by your browser using JavaScript code - this avoids any possible security risks.
+    Everything you need to do is on this one page. Nothing is stored by Fluky on the server and all the processing is done by your browser using JavaScript code - this avoids any possible security risks.
   </p>
   <p>
-    As you complete a step, further steps will appear... (Don't worry - there aren't many!)
+    <b>Pro Tip #1:</b> There are import and export functions available: save your mark model for future use.
   </p>
-  <p>
-    There are import and export functions available, so you should save your mark model for future use.
-  </p>
+  <p><b>Pro Tip #2:</b> Click the section headings to collapse them and save screen real estate...</p>
 </uib-accordion-group>
 </uib-accordion>
 
 
 <uib-accordion>
-  <uib-accordion-group heading="Setup Mark Model" is-open="true">
+<uib-accordion-group heading="Setup Mark Model" is-open="true">
+
+  <div class="panel panel-primary">
+    <div class="panel-body">
     <p>
-      Create your mark model here by specifying the number of questions in your test, and the marks awarded to each option.
+      Create your mark model here by first specifying the number of questions in your test, and the total marks available (100%). When you increment or decrement the number of questions you will notice the grid in the "Mark Setup" changes to reflect your setup. The "Mark Setup" section contains the setup for the test on a question by question basis, pertinently, the marks that should be allocated to each choice. Negative and part marks are also allowed.
+    </p>
+    <p>The final test mark is the sum of all of the choice marks, however, zero marks will be awarded if the number of choices made is greater than the maximum number of choices allowed for that question!</p>
+    <p><b>Pro Tip #1:</b>  It might be worth considering making each question allow 2 answers, to compensate for extreme scanner sensitivity.
     </p>
 
-    <p>
-      <em>
-        Note: Zero marks will be awarded if the number of choices made is greater than the number of choices allowed! It might also be worth considering making each question allow 2 answers, to compensate for scan errors.
-      </em>
-    </p>
+    <p><b>Pro Tip #2:</b> If you change the default choice marks before you increment the number of questions, the next question will have a different default for that question!</p>
+    </div>
+  </div>
 
-    <p>When you are happy with the options, click the generate button.</p>
 
       <!--<div class="form-group">
         <label>Number of Options per Question:</label>
@@ -42,106 +43,129 @@
         <input data-ng-repeat="q in questionOptions" type="number" class="form-control" data-ng-model="q">
       </div> -->
 
+<h5></h5>
 
       <div class="form-group">
-        <label>Default Mark:</label>
-        <input type="number" class="form-control" data-ng-model="markModelSetup.defaultMark">
-      </div>
-
-      <div class="form-group">
-        <label>Number of Questions:</label>
-        <input type="number" class="form-control" min="1" data-ng-model="markModelSetup.numQuestions">
-      </div>
-
-      <div class="form-group">
-        <label>Total Marks:</label>
-        <input type="number" class="form-control" min="1" data-ng-model="markModelSetup.totalMarks">
-      </div>
-
-      <div class="form-group">
-        <button type="button" class="btn btn-primary pull-left" data-ng-click="generateModel()" data-ng-show="!markModel">
-          Generate Model Grid
-        </button>
-        <button type="button" class="btn btn-primary pull-left" data-ng-click="generateModel()" data-ng-show="markModel">
-          Re-Generate Model Grid
-        </button>
-      </div>
-
-      <div class="form-group">
-        <button type="file" class="btn btn-default pull-right" data-ngf-select="importModel($file, $invalidFiles)">
+        <button type="file" class="btn btn-default btn-block" data-ngf-select="importModel($file, $invalidFiles)">
           <i class="fa fa-folder-open"></i> {{importModelText}}
         </button>
       </div>
 
 
-      <div data-ng-if="markModel">
-        <div class="row"></div>
-        <div class="vsep"></div>
-        <hr/>
-        <label>Questions:</label>
+      <h4>General Parameters</h4>
 
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th>Question</th>
-              <th>A</th>
-              <th>B</th>
-              <th>C</th>
-              <th>D</th>
-              <th>E</th>
-              <th>Max.</br>Marks</th>
-              <th>Max.</br>Choices</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr data-ng-repeat="q in markModel">
-              <td class="center">{{q.num}}</td>
-              <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[0]"></td>
-              <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[1]"></td>
-              <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[2]"></td>
-              <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[3]"></td>
-              <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[4]"></td>
-              <td><input type="number" class="form-control" data-ng-model="q.choiceTotal"></td>
-              <td><input type="number" class="form-control" min="0" max="5" data-ng-model="q.choices"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="form-group">
-          <button type="button" class="btn btn-default pull-right" data-ng-click="exportModel()">
-            <i class="fa fa-download"></i> Export Model Grid
-          </button>
-        </div>
+      <div class="form-group">
+        <label>Number of Questions: </label>
+        <input type="number" class="form-control" min="1" data-ng-model="markModelSetup.numQuestions" data-ng-change="generateModel()">
       </div>
 
+      <div class="form-group">
+        <label>Default Choice Mark: </label>
+        <input type="number" class="form-control" data-ng-model="markModelSetup.defaultMark">
+      </div>
+
+      <div class="form-group">
+        <label>Total Test Marks: </label>
+        <input type="number" class="form-control" min="1" data-ng-model="markModelSetup.totalMarks">
+      </div>
+
+      <hr/>
+      <h4>Advanced Parameters (Optional)</h4>
+
+      <div class="form-group">
+        <label>Number of Knowledge Areas: </label>
+        <input type="number" class="form-control" min="0" data-ng-model="markModelSetup.knowledgeAreas.length" data-ng-change="updateKA()">
+      </div>
+      
+
+      <!--
+      <div class="form-group">
+        <button type="button" class="btn btn-primary pull-left" data-ng-click="generateModel()" data-ng-show="!markModel">
+          Generate Model Grid
+        </button>
+        <button type="button" class="btn btn-primary pull-left" data-ng-click="generateModel()" data-ng-show="markModel">
+          Update Model Grid
+        </button>
+      </div>
+    -->
 
 
-    </uib-accordion-group>
-  </uib-accordion>
+
+
+    <div data-ng-if="markModel">
+      <hr/>
+      <h4>Mark Setup</h4>
+      <p>This section should update automatically as you change the parameters above.</p>
+      <div class="row"></div>
+      <div class="vsep"></div>
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>A</th>
+            <th>B</th>
+            <th>C</th>
+            <th>D</th>
+            <th>E</th>
+            <th>Question</br>Mark</th>
+            <th>Max.</br>Choices</th>
+            <th data-ng-show="markModelSetup.knowledgeAreas.length>0">Knowledge</br>Area</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="q in markModel">
+            <td class="center">{{q.num}}</td>
+            <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[0]"></td>
+            <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[1]"></td>
+            <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[2]"></td>
+            <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[3]"></td>
+            <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[4]"></td>
+            <td><input type="number" class="form-control" data-ng-model="q.choiceTotal"></td>
+            <td><input type="number" class="form-control" min="0" max="5" data-ng-model="q.choices"></td>
+            <td data-ng-show="markModelSetup.knowledgeAreas.length>0"><select class="form-control" data-ng-model="q.knowledgeArea" data-ng-options="o as o for o in markModelSetup.knowledgeAreas"></select></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="form-group">
+        <button type="button" class="btn btn-default btn-block" data-ng-click="exportModel()">
+          <i class="fa fa-download"></i> Download Mark Model File
+        </button>
+      </div>
+    </div>
+
+
+
+  </uib-accordion-group>
+</uib-accordion>
 
 
 <uib-accordion data-ng-if="markModel">
-  <uib-accordion-group heading="Upload Card Scan" is-open="true">
-      <p>
-        Upload the .dat file that you received from the card scanner here. This file contains a list of student numbers associated to the MCQ card selections.
-      </p>
-      <p>
-        The file will be immediately processed according to the Mark Model above. Click "Download CSV" and you will be prompted where you would like to save the .csv file which contains the marks. Save the file and then proceed to use Fluky to view the associated statistics.
-      </p>
-      <p>
-        <em>
-          Note: On occasion, incompetent students don't fill out their student number correctly. Unfortunately, you will have to manually figure out these cases.
-        </em>
-      </p>
+<uib-accordion-group heading="Upload Card Scan" is-open="true">
+ <div class="panel panel-primary">
+    <div class="panel-body">
+<p>
+  Upload the .dat file that you received from the card scanner here. The file will be processed immediately according to the Mark Model above. If you change the Mark Model, do the upload again to re-process.
+</p>
+<p>
+   Click "Download CSV" and you will be prompted where you would like to save the .csv file which contains the marks. Save the file and then proceed to use Fluky to view the associated statistics.
+</p>
+<p>
+    <b>Pro Tip:</b> On occasion, incompetent students don't fill out their student number correctly. Unfortunately, you will have to manually figure out these cases.
+</p>
+</div>
+</div>
+<h5></h5>
 
-      <label>Upload Scan Data:</label>
-      <div class="input-group">
-        <input type="text" readonly class="form-control" data-ng-model="importMarksFileName" placeholder="Click the &#xf07c; button to choose the .dat file...">
-        <span class="input-group-btn">
-          <button class="btn btn-default" type="file" data-ngf-select="importMarks($file, $invalidFiles)"><i class="fa fa-folder-open"></i></button>
-        </span>
-      </input>
-    </div>
+<label>Upload Scan Data:</label>
+<div class="input-group">
+  <input type="text" readonly class="form-control" data-ng-model="importMarksFileName" placeholder="Click the &#xf07c; button to choose the .dat file...">
+  <span class="input-group-btn">
+    <button class="btn btn-default" type="file" data-ngf-select="importMarks($file, $invalidFiles)"><i class="fa fa-folder-open"></i></button>
+  </span>
+</input>
+</div>
 
     <!--<div data-ng-show="uploading">
       <h5><i class="fa fa-cog fa-spin"></i> Please wait...</h5>
@@ -174,7 +198,7 @@
 
 <div class="panel panel-default" data-ng-if="markData">
   <div class="panel-heading">
-    <h3 class="panel-title">View Mark Statistics</h3>
+    <h3 class="panel-title">Test Statistics</h3>
   </div>
   <div class="panel-body">
     <p>
@@ -182,7 +206,7 @@
     </p>
 
 
-    <h5>Overall Statistics:</h5>
+    <h4>Overall Statistics</h4>
     
     <h5>Average Mark: </h5> {{markStats.average | number:2}} / {{markModelSetup.totalMarks}} ({{(markStats.average / markModelSetup.totalMarks)*100 | number:2}}%)
     <h5>Pass Rate: </h5> {{markStats.numPassed}} / {{markData.length}} ({{(markStats.numPassed / markData.length)*100 | number:2}}%)
@@ -212,7 +236,7 @@
     
 
     <hr/>
-    <h5>Individual Statistics:</h5>
+    <h4>Individual Statistics</h4>
 
     <div class="form-group">
       <label>Select a card (by student number):</label>
@@ -223,7 +247,7 @@
 
     <div data-ng-if="selectedStudent">
 
-      <label>Total Mark: </label> {{getMarkData(selectedStudent).totalMark}} / {{totalMarks}} ({{(getMarkData(selectedStudent).totalMark/markModel.totalMarks)*100 | number:2}}%)
+      <label>Total Mark: </label> {{getMarkData(selectedStudent).totalMark}} / {{markModelSetup.totalMarks}} ({{(getMarkData(selectedStudent).totalMark/markModelSetup.totalMarks)*100 | number:2}}%)
 
       <table class="table table-hover">
         <thead>
