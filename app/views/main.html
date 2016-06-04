@@ -89,7 +89,8 @@
               <th>C</th>
               <th>D</th>
               <th>E</th>
-              <th>Choices</th>
+              <th>Max.</br>Marks</th>
+              <th>Max.</br>Choices</th>
             </tr>
           </thead>
           <tbody>
@@ -100,7 +101,8 @@
               <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[2]"></td>
               <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[3]"></td>
               <td><input type="number" class="form-control" data-ng-model="q.choiceMarks[4]"></td>
-              <td><input type="number" class="form-control" min="1" max="5" data-ng-model="q.choices"></td>
+              <td><input type="number" class="form-control" data-ng-model="q.choiceTotal"></td>
+              <td><input type="number" class="form-control" min="0" max="5" data-ng-model="q.choices"></td>
             </tr>
           </tbody>
         </table>
@@ -141,9 +143,9 @@
       </input>
     </div>
 
-    <div data-ng-show="uploading">
+    <!--<div data-ng-show="uploading">
       <h5><i class="fa fa-cog fa-spin"></i> Please wait...</h5>
-    </div>
+    </div>-->
 
     <div data-ng-if="markData">
       <div class="vsep"></div>
@@ -192,15 +194,22 @@
         <tr>
           <th>Question</th>
           <th>Average Mark</th>
+          <th>Maximum Marks</th>
         </tr>
       </thead>
       <tbody>
         <tr data-ng-repeat="q in markStats.questionAverage">
           <td class="center">{{q.q}}</td>
           <td class="center">{{q.ave | number:2}}</td>
+          <td class="center">{{q.max}}</td>
         </tr>
       </tbody>
     </table>
+
+    <h5>Overall Percentage Histogram:</h5>
+    <div data-ac-chart="'bar'" data-ac-data="markStats.histo.data" data-ac-config="markStats.histo.config" class="chart"></div>
+    
+    
 
     <hr/>
     <h5>Individual Statistics:</h5>

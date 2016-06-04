@@ -56,10 +56,10 @@
 
       $scope.$apply;
 
-  		if (!$scope.markModel) {
-  			$scope.markModel = [];
+      if (!$scope.markModel) {
+       $scope.markModel = [];
 
-  			for (i = 1; i <= $scope.markModelSetup.numQuestions; ++i) {
+       for (i = 1; i <= $scope.markModelSetup.numQuestions; ++i) {
   				//q = {num: i, 
   				//	a : $scope.markModelSetup.defaultMark, b:$scope.markModelSetup.defaultMark, c:$scope.markModelSetup.defaultMark, d:$scope.markModelSetup.defaultMark, e:$scope.markModelSetup.defaultMark,
   				//	choices : 1 };
@@ -67,6 +67,7 @@
           //5 questions are hardcoded for now
           q = {num: i, 
             choiceMarks: [$scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark],
+            choiceTotal: 0,
             choices: 1 };
 
             $scope.markModel.push(q);
@@ -76,6 +77,7 @@
            for (i = $scope.markModel.length + 1; i <= $scope.markModelSetup.numQuestions; ++i) {
             q = {num: i, 
               choiceMarks: [$scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark, $scope.markModelSetup.defaultMark],
+              choiceTotal: 0,
               choices: 1 };
 
               $scope.markModel.push(q);
@@ -257,23 +259,59 @@ var _processMarkData = function (rawText) {
         } else if (tempMark.totalMark < worstMark) {
           worstMark = tempMark.totalMark;
         }
+
       }
 
       averageTotal = averageTotal / count;
 
       $scope.markStats = {
-      "average": averageTotal, 
-      "bestMark": bestMark,
-      "worstMark": worstMark,
-      "numPassed": numPassed,
-      "questionAverage": [] };
+        "average": averageTotal, 
+        "bestMark": bestMark,
+        "worstMark": worstMark,
+        "numPassed": numPassed,
+        "questionAverage": [],
+        "histo": {
+          data: {
+            series: [],
+            data: []
+          },
+          config: {
+            title: '',
+            tooltips: true,
+            labels: false,
+            mouseover: function() {},
+            mouseout: function() {},
+            click: function() {},
+            legend: {
+              display: false,
+              //could be 'left, right'
+              position: 'right'
+            }
+          }
+        }
+      };
 
       for (var i = 0; i < questionAverage.length; ++i) {
         questionAverage[i] = questionAverage[i] / count;
-        $scope.markStats.questionAverage[i] = {"q": i + 1, "ave": questionAverage[i], "max": "?"};
+        $scope.markStats.questionAverage[i] = {"q": i + 1, "ave": questionAverage[i], "max": $scope.markModel[i].choiceTotal};
       }
 
-      
+      var ttot = 0;
+      //populate the histogram
+      for (i = 0; i <= 100; i+=5) {
+        ttot = 0;
+        //inefficient, but loop through all the totals and if its between i and i+5 then increment
+        for (var markIdx = 0; markIdx < $scope.markData.length; ++markIdx) {
+          var tempMark = ($scope.markData[markIdx].totalMark / $scope.markModelSetup.totalMarks) * 100;
+          if ((tempMark >= i) && (tempMark < (i+5))) {
+            ttot++;
+          }
+        }
+        $scope.markStats.histo.data.data.push({x: i, y: [ttot], tooltip: "Between " + i + " and " + (i+5) + "%: " + ttot});
+      }
+
+
+
 
       return count;
     };
@@ -320,25 +358,33 @@ var _processMarkData = function (rawText) {
         return;
       }
 
-      var csvString = "";
-      var tempLine = "";
+      var csvString = '';
+      var tempLine = '';
       //build a csv file with the following format:
-      //StudNum, TotalMark, Q1Mark, Q2Mark, ..., QnMark
-      csvString = "StudentNumber,TotalMark";
-      for (var i = 0; i < $scope.markModel.length; ++i) {
-        csvString += ",Q" + i;
+      //StudNum, TotalMark, ExcessChoices, Q1Mark, Q2Mark, ..., QnMark
+      csvString = 'StudentNumber,TotalMark,ExcessChoices';
+      for (var i = 1; i <= $scope.markModel.length; ++i) {
+        csvString += ',Q' + i;
       }
-      csvString += "\n";
+      csvString += '\n';
 
       for (var markIdx = 0; markIdx < $scope.markData.length; ++markIdx) {
         var tempMark = $scope.markData[markIdx]; //convenient reference
-        
-        csvString += tempMark.studentNumber + "," + tempMark.totalMark;
+        var excess = 0;
+
+        var csvLine = '';
 
         for (var questionIdx = 0; questionIdx < $scope.markModel.length; ++questionIdx) {
-          csvString += "," + tempMark.marks[questionIdx].mark;
+          csvLine += ',' + tempMark.marks[questionIdx].mark;
+          if (tempMark.marks[questionIdx].excessChoices) {
+            excess++;
+          }
         }
-        csvString += "\n";
+
+        //Prepend the totals, etc.
+        csvLine = tempMark.studentNumber + ',' + tempMark.totalMark + ',' + excess + csvLine + '\n';
+        
+        csvString += csvLine;
       }
 
       var data = new Blob([csvString], { type: 'text/plain;charset=utf-8' });

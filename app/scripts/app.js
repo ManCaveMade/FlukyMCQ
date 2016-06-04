@@ -17,7 +17,8 @@ angular
     'ngSanitize',
     'ngFileSaver',
     'ngFileUpload',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'angularCharts'
   ])
   .config(function ($routeProvider) {
     $routeProvider

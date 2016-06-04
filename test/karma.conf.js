@@ -34,6 +34,10 @@ module.exports = function(config) {
       'bower_components/file-saver.js/FileSaver.js',
       'bower_components/angular-file-saver/dist/angular-file-saver.bundle.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+      'bower_components/Chart.js/Chart.js',
+      'bower_components/angular-chart.js/dist/angular-chart.js',
+      'bower_components/d3/d3.js',
+      'bower_components/angular-charts/dist/angular-charts.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',
