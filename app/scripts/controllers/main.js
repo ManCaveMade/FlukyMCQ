@@ -225,9 +225,11 @@ var _processMarkData = function (rawText) {
 
         tempMark.marks = [];
         tempMark.totalMark = 0;
+        tempMark.lenientTotalMark = 0;
 
         for (var questionIdx = 0; questionIdx < $scope.markModel.length; ++questionIdx) {
           var sum = 0;
+          var lsum = 0;
           var totalAnswers = 0;
           var tooManyChoices = false;
 
@@ -245,8 +247,14 @@ var _processMarkData = function (rawText) {
             tooManyChoices = true;
           }
 
-          tempMark.totalMark += sum;
+          if (sum >= 0) {
+            lsum = sum; 
+          }
 
+          tempMark.totalMark += sum;
+          tempMark.lenientTotalMark += lsum;
+          
+          
           //update overall stats
           if (!questionAverage[questionIdx]) {
             questionAverage[questionIdx] = sum;
@@ -255,7 +263,7 @@ var _processMarkData = function (rawText) {
           }
           
 
-          tempMark.marks.push({"q": questionIdx + 1,"mark": sum, "choices": tempMark.choices[questionIdx], "excessChoices": tooManyChoices});
+          tempMark.marks.push({"q": questionIdx + 1,"mark": sum, "lenientMark": lsum, "choices": tempMark.choices[questionIdx], "excessChoices": tooManyChoices});
         }
 
         //update stats
@@ -373,7 +381,7 @@ var _processMarkData = function (rawText) {
       var tempLine = '';
       //build a csv file with the following format:
       //StudNum, TotalMark, ExcessChoices, Q1Mark, Q2Mark, ..., QnMark
-      csvString = 'StudentNumber,TotalMark,ExcessChoices';
+      csvString = 'StudentNumber,TotalMark,LenientTotalMark,ExcessChoices';
       for (var i = 1; i <= $scope.markModel.length; ++i) {
         csvString += ',Q' + i;
       }
@@ -393,7 +401,7 @@ var _processMarkData = function (rawText) {
         }
 
         //Prepend the totals, etc.
-        csvLine = tempMark.studentNumber + ',' + tempMark.totalMark + ',' + excess + csvLine + '\n';
+        csvLine = tempMark.studentNumber + ',' + tempMark.totalMark + ',' + tempMark.lenientTotalMark + ',' + excess + csvLine + '\n';
         
         csvString += csvLine;
       }
