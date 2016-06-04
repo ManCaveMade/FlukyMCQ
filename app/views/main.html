@@ -20,8 +20,8 @@
 <uib-accordion>
 <uib-accordion-group heading="Setup Mark Model" is-open="true">
 
-  <div class="panel panel-primary">
-    <div class="panel-body">
+<div class="panel panel-primary">
+  <div class="panel-body">
     <p>
       Create your mark model here by first specifying the number of questions in your test, and the total marks available (100%). When you increment or decrement the number of questions you will notice the grid in the "Mark Setup" changes to reflect your setup. The "Mark Setup" section contains the setup for the test on a question by question basis, pertinently, the marks that should be allocated to each choice. Negative and part marks are also allowed.
     </p>
@@ -30,8 +30,8 @@
     </p>
 
     <p><b>Pro Tip #2:</b> If you change the default choice marks before you increment the number of questions, the next question will have a different default for that question!</p>
-    </div>
   </div>
+</div>
 
 
       <!--<div class="form-group">
@@ -43,7 +43,7 @@
         <input data-ng-repeat="q in questionOptions" type="number" class="form-control" data-ng-model="q">
       </div> -->
 
-<h5></h5>
+      <h5></h5>
 
       <div class="form-group">
         <button type="file" class="btn btn-default btn-block" data-ngf-select="importModel($file, $invalidFiles)">
@@ -77,6 +77,9 @@
         <input type="number" class="form-control" min="0" data-ng-model="markModelSetup.knowledgeAreas.length" data-ng-change="updateKA()">
       </div>
       
+      <div class="bg-warning" data-ng-show="markModelSetup.knowledgeAreas.length>0">
+        <p class="text-warning">This feature is not fully implemented, yet. The final CSV will not include knowledge area mark breakdowns.</p>
+      </div>
 
       <!--
       <div class="form-group">
@@ -142,17 +145,17 @@
 
 <uib-accordion data-ng-if="markModel">
 <uib-accordion-group heading="Upload Card Scan" is-open="true">
- <div class="panel panel-primary">
-    <div class="panel-body">
-<p>
-  Upload the .dat file that you received from the card scanner here. The file will be processed immediately according to the Mark Model above. If you change the Mark Model, do the upload again to re-process.
-</p>
-<p>
-   Click "Download CSV" and you will be prompted where you would like to save the .csv file which contains the marks. Save the file and then proceed to use Fluky to view the associated statistics.
-</p>
-<p>
+<div class="panel panel-primary">
+  <div class="panel-body">
+    <p>
+      Upload the .dat file that you received from the card scanner here. The file will be processed immediately according to the Mark Model above. If you change the Mark Model, do the upload again to re-process.
+    </p>
+    <p>
+     Click "Download CSV" and you will be prompted where you would like to save the .csv file which contains the marks. Save the file and then proceed to use Fluky to view the associated statistics.
+   </p>
+   <p>
     <b>Pro Tip:</b> On occasion, incompetent students don't fill out their student number correctly. Unfortunately, you will have to manually figure out these cases.
-</p>
+  </p>
 </div>
 </div>
 <h5></h5>
