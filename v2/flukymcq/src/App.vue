@@ -19,14 +19,14 @@
       </v-btn>
     </v-app-bar>
 
-    <v-content>
+    <v-content app>
       <FlukyV2 />
     </v-content>
 
     <v-footer app dark>
       <div
         class="body-2"
-      >Created by Mitchell A. Cox :: Please double check Fluky's output as the creator(s) cannot be held liable for errors.</div>
+      >Created by Mitchell A. Cox :: <a href="https://github.com/ManCaveMade/FlukyMCQ/blob/master/LICENSE" target="_blank">MIT License</a></div>
 
       <v-spacer />
       <div class="body-2">Version 2.0</div>
