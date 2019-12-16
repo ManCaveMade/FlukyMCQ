@@ -78,20 +78,48 @@
             <v-row>
               <v-col cols="12" sm="6" md="6">
                 <v-text-field
-                  v-model="testSetup.numQuestions"
+                  v-model.number="numQuestions"
                   type="number"
+                  min="1"
                   label="Number of Questions"
                 ></v-text-field>
               </v-col>
             </v-row>
+          </v-card-text>
+        </v-card>
+
+        <p></p>
+
+        <v-card class="mx-auto" outlined elevation="1">
+          <v-card-title>Mark Matrix</v-card-title>
+          <v-card-text>
             <v-row>
-              <v-col cols="12" sm="6" md="6">
-                <v-text-field
-                  v-model="testSetup.totalMarks"
-                  type="number"
-                  label="Total Marks (100%)"
-                ></v-text-field>
-              </v-col>
+              <v-simple-table fixed-header height="400px">
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th class="text-center">Question</th>
+                      <th class="text-center">A</th>
+                      <th class="text-center">B</th>
+                      <th class="text-center">C</th>
+                      <th class="text-center">D</th>
+                      <th class="text-center">E</th>
+                      <th class="text-center">Marks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="q in questions" :key="q.number">
+                      <td>{{q.number}}</td>
+                      <td>{{q.A}}</td>
+                      <td>{{q.B}}</td>
+                      <td>{{q.C}}</td>
+                      <td>{{q.D}}</td>
+                      <td>{{q.E}}</td>
+                      <td>{{q.marks}}</td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
             </v-row>
           </v-card-text>
         </v-card>
@@ -127,8 +155,43 @@ export default {
   },
   data: () => ({
     step: 1,
-    testSetup: { totalMarks: 0, numQuestions: 1 }
+    numQuestions: 1,
+    questions: [{number: 1, A: 0, B: 0, C: 0, D: 0, E: 0, marks: 0}]
   }),
-  created() {}
+  created() {},
+  computed: {
+    totalMarks: function() {
+      //Return total test marks
+      return 1000;
+    }
+  },
+  watch: {
+    // whenever question changes, this function will run
+    numQuestions: function() {
+      this.updateNumberOfQuestions();
+    }
+  },
+  methods: {
+    updateNumberOfQuestions: function() {
+      //Resize the questions array to the number of questions
+
+      if (this.questions.length < this.numQuestions) {
+        for (let q = this.questions.length + 1; q <= this.numQuestions; ++q) {
+          let tempQuestion = {
+            number: q,
+            A: 0,
+            B: 0,
+            C: 0,
+            D: 0,
+            E: 0,
+            marks: 0
+          };
+          this.questions.push(tempQuestion);
+        }
+      } else {
+        this.questions.splice(this.numQuestions);
+      }
+    }
+  }
 };
 </script>
