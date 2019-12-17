@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "core-js": "^3.3.2",
+    "file-saver": "^2.0.2",
     "vue": "^2.6.10",
+    "vue-filereader": "^0.1.1",
     "vuetify": "^2.1.0"
   },
   "devDependencies": {

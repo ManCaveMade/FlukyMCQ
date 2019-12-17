@@ -50,7 +50,8 @@
           <v-dialog v-model="dialog.stepTwo" scrollable max-width="700px">
             <template v-slot:activator="{ on }">
               <v-btn color="warning" small outlined v-on="on">Show Description and Tips</v-btn>
-              <v-btn class="ml-2" outlined small>Restore Mark Model</v-btn>
+              <input type="file" ref="file" style="display: none" @change="importMarkModel">
+              <v-btn class="ml-2" outlined small @click="$refs.file.click()">Import Mark Model</v-btn>
             </template>
             <v-card>
               <v-card-title>
@@ -74,7 +75,10 @@
                     The mark for a question will be made zero if the total choices made is greater than the specified "Allowed Choices".
                     This alleviates the need for näive negative marking used to prevent excess marks by "blanketing" the MCQ card.
                   </li>
-                  <li>The mark for a question will be capped / floored to the maximum / minimum specified for that question. Click the <v-icon small>mdi-refresh</v-icon> next to the input fields to auto-calculate. </li>
+                  <li>
+                    The mark for a question will be capped / floored to the maximum / minimum specified for that question. Click the
+                    <v-icon small>mdi-refresh</v-icon>next to the input fields to auto-calculate.
+                  </li>
                   <li>
                     In the case of negative marking, the mark for a question will be floored to the minimum specified for that question. If left as the default value of zero, a negative question mark will not be carried into the test total, preventing student panic. This is useful for questions which require multiple "correct" selections, where some
                     <i>very</i> wrong options are made negative.
@@ -160,13 +164,37 @@
                       <v-text-field dense v-model.number="q.maxChoices" type="number" height="20px"></v-text-field>
                     </td>
                     <td class="pt-4">
-                      <v-text-field dense v-model.number="q.minMark" type="number" height="20px" append-icon="mdi-refresh" @click:append="updateMinMark(q.number)"></v-text-field>
+                      <v-text-field
+                        dense
+                        v-model.number="q.minMark"
+                        type="number"
+                        height="20px"
+                        append-icon="mdi-refresh"
+                        @click:append="updateMinMark(q.number)"
+                      ></v-text-field>
                     </td>
                     <td class="pt-4">
-                      <v-text-field dense v-model.number="q.maxMark" type="number" height="20px" append-icon="mdi-refresh" @click:append="updateMaxMark(q.number)"></v-text-field>
+                      <v-text-field
+                        dense
+                        v-model.number="q.maxMark"
+                        type="number"
+                        height="20px"
+                        append-icon="mdi-refresh"
+                        @click:append="updateMaxMark(q.number)"
+                      ></v-text-field>
                     </td>
-                    <td class="pt-4" style="border-left:1px solid #dddddd;" v-if="numKnowledgeAreas">
-                      <v-text-field dense v-model.number="q.knowledgeArea" min="0" type="number" height="20px"></v-text-field>
+                    <td
+                      class="pt-4"
+                      style="border-left:1px solid #dddddd;"
+                      v-if="numKnowledgeAreas"
+                    >
+                      <v-text-field
+                        dense
+                        v-model.number="q.knowledgeArea"
+                        min="0"
+                        type="number"
+                        height="20px"
+                      ></v-text-field>
                     </td>
                   </tr>
                 </tbody>
@@ -176,7 +204,7 @@
         </v-row>
 
         <div class="pt-4 pb-2">
-          <v-btn outlined>Download Mark Model</v-btn>
+          <v-btn outlined @click="exportMarkModel">Export Mark Model</v-btn>
           <v-btn class="ml-2" outlined color="primary" @click="step = 3">Continue</v-btn>
           <v-btn class="ml-2" text @click="step = 1">Back</v-btn>
         </div>
@@ -299,7 +327,9 @@ export default {
         this.questions[questionNumber - 1].D,
         this.questions[questionNumber - 1].E
       ];
-      tempChoices = tempChoices.sort(function(a,b){return a - b}); //sort ascending
+      tempChoices = tempChoices.sort(function(a, b) {
+        return a - b;
+      }); //sort ascending
 
       let minMark = 0;
       for (let i = 0; i < this.questions[questionNumber - 1].maxChoices; ++i) {
@@ -324,7 +354,9 @@ export default {
         this.questions[questionNumber - 1].D,
         this.questions[questionNumber - 1].E
       ];
-      tempChoices = tempChoices.sort(function(a,b){return a - b}); //sort ascending
+      tempChoices = tempChoices.sort(function(a, b) {
+        return a - b;
+      }); //sort ascending
 
       let maxMark = 0;
       for (let i = 0; i < this.questions[questionNumber - 1].maxChoices; ++i) {
@@ -332,6 +364,46 @@ export default {
       }
 
       this.questions[questionNumber - 1].maxMark = maxMark;
+    },
+    exportMarkModel: function() {
+      let exportObject = {
+        numQuestions: this.numQuestions,
+        numKnowledgeAreas: this.numKnowledgeAreas,
+        questions: this.questions
+      };
+      let json = JSON.stringify(exportObject);
+
+      //Save to disk
+      let FileSaver = require("file-saver");
+      let data = new Blob([json], { type: "text/plain;charset=utf-8" });
+      FileSaver.saveAs(data, "FlukyModel.json");
+    },
+    importMarkModel: function(e) {
+      if (!e) return;
+
+      let file = e.target.files[0];
+
+      if (!FileReader) {
+        //hit
+        alert("The File APIs are not fully supported by your browser.");
+        this.console.error("No FileReader!");
+        return;
+      }
+
+      let reader = new FileReader();
+      reader.onload = function() {
+        var text = reader.result;
+        var imported = JSON.parse(text);
+        if (imported) {
+          this.numKnowledgeAreas = imported.numKnowledgeAreas;
+          this.questions = imported.questions;
+          this.numQuestions = imported.numQuestions;
+        } else {
+          alert("Something went wrong, please try again.");
+        }
+      }.bind(this);
+
+      reader.readAsText(file);
     }
   }
 };
